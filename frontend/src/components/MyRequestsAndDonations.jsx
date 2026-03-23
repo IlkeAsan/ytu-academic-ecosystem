@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import { Check, X, MessageCircle, Star } from 'lucide-react';
+import { Check, X, MessageCircle, Star, Trash2 } from 'lucide-react';
 import RatingModal from './RatingModal';
 
 export default function MyRequestsAndDonations({ session }) {
@@ -69,6 +69,23 @@ export default function MyRequestsAndDonations({ session }) {
     }
   };
 
+  const handleDeleteDonation = async (donationId) => {
+    if (!window.confirm("Bu ilanı kaldırmak istediğinize emin misiniz? İlan ve bu ilana gelen tüm talepler kalıcı olarak silinecektir.")) return;
+    
+    try {
+      // 1. Önce ilana ait talepleri siliyoruz (foreign key hatası almamak için)
+      await supabase.from('requests').delete().eq('donation_id', donationId);
+      
+      // 2. İlanın kendisini siliyoruz
+      const { error } = await supabase.from('donations').delete().eq('id', donationId);
+      if (error) throw error;
+      
+      fetchData();
+    } catch (error) {
+      alert("Silme işlemi sırasında hata oluştu: " + error.message);
+    }
+  };
+
   const openWhatsApp = (phoneStr) => {
     if(!phoneStr) {
       alert("Kullanıcı iletişim numarası sağlamamış.");
@@ -101,11 +118,20 @@ export default function MyRequestsAndDonations({ session }) {
                   <h3 className="text-lg font-bold text-gray-900 border-l-4 border-blue-500 pl-3">
                     {donation.materials_catalog?.item_name || 'Bilinmeyen Materyal'}
                   </h3>
-                  <span className={`px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider ${
-                    donation.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
-                  }`}>
-                    {donation.status === 'completed' ? 'TAMAMLANDI' : 'AKTİF'}
-                  </span>
+                  <div className="flex items-center space-x-3">
+                    <span className={`px-3 py-1 text-xs font-bold rounded-full uppercase tracking-wider ${
+                      donation.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-blue-100 text-blue-800'
+                    }`}>
+                      {donation.status === 'completed' ? 'TAMAMLANDI' : 'AKTİF'}
+                    </span>
+                    <button
+                      onClick={() => handleDeleteDonation(donation.id)}
+                      className="text-red-500 hover:text-red-700 hover:bg-red-50 p-1.5 rounded-full transition-colors flex items-center justify-center"
+                      title="İlanı Kaldır"
+                    >
+                      <Trash2 className="w-5 h-5" />
+                    </button>
+                  </div>
                 </div>
                 
                 {donation.requests && donation.requests.length > 0 ? (
