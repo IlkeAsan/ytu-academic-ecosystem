@@ -58,13 +58,17 @@ export default function Dashboard({ session }) {
 
   const filteredDonations = donations.filter(d => {
     if (!searchQuery) return true;
-    const cat = d.materials_catalog;
-    const term = searchQuery.toLowerCase();
-    return (
-      cat.course_code.toLowerCase().includes(term) ||
-      cat.course_name.toLowerCase().includes(term) ||
-      cat.item_name.toLowerCase().includes(term)
-    );
+    const cat = d.materials_catalog || {};
+    const searchTerms = searchQuery.toLowerCase().split(' ').filter(word => word.trim().length > 0);
+    
+    const searchableText = [
+      cat.course_code || '',
+      cat.course_name || '',
+      cat.item_name || '',
+      cat.category || ''
+    ].join(' ').toLowerCase();
+
+    return searchTerms.every(term => searchableText.includes(term));
   });
 
   return (
