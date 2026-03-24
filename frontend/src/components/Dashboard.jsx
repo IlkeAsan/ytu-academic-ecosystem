@@ -6,6 +6,7 @@ export default function Dashboard({ session }) {
   const [donations, setDonations] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [userScores, setUserScores] = useState({});
 
   const fetchDonations = async () => {
     setLoading(true);
@@ -25,6 +26,24 @@ export default function Dashboard({ session }) {
 
       if (error) throw error;
       setDonations(data || []);
+
+      const { data: ratingsData } = await supabase.from('ratings').select('rated_user_id, score');
+      if (ratingsData) {
+        const scoreMap = {};
+        ratingsData.forEach(r => {
+          if (!scoreMap[r.rated_user_id]) scoreMap[r.rated_user_id] = { total: 0, count: 0 };
+          scoreMap[r.rated_user_id].total += r.score;
+          scoreMap[r.rated_user_id].count += 1;
+        });
+        const avgScores = {};
+        Object.keys(scoreMap).forEach(key => {
+          avgScores[key] = {
+            avg: (scoreMap[key].total / scoreMap[key].count).toFixed(1),
+            count: scoreMap[key].count
+          };
+        });
+        setUserScores(avgScores);
+      }
     } catch (error) {
       console.error('İlanları çekerken hata:', error.message);
     } finally {
@@ -123,6 +142,11 @@ export default function Dashboard({ session }) {
                   <div className="flex items-center text-sm text-gray-500 mb-6">
                     <MapPin className="w-4 h-4 mr-1 text-gray-400" />
                     Bağışçı: {d.profiles?.email?.split('@')[0]}
+                    {userScores[d.donor_id] && (
+                      <span className="ml-2 text-xs text-yellow-600 font-semibold bg-yellow-50 px-2 py-0.5 rounded border border-yellow-200">
+                        ⭐ {userScores[d.donor_id].avg} ({userScores[d.donor_id].count})
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

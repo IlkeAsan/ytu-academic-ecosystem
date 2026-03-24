@@ -7,6 +7,7 @@ export default function MyRequestsAndDonations({ session }) {
   const [myDonations, setMyDonations] = useState([]); // Includes incoming requests
   const [myRequests, setMyRequests] = useState([]);   // Includes donation info
   const [loading, setLoading] = useState(true);
+  const [userScores, setUserScores] = useState({});
   
   // Rating states
   const [showRating, setShowRating] = useState(false);
@@ -47,6 +48,24 @@ export default function MyRequestsAndDonations({ session }) {
       if (rError) throw rError;
       setMyRequests(requestsData || []);
 
+      const { data: ratingsData } = await supabase.from('ratings').select('rated_user_id, score');
+      if (ratingsData) {
+        const scoreMap = {};
+        ratingsData.forEach(r => {
+          if (!scoreMap[r.rated_user_id]) scoreMap[r.rated_user_id] = { total: 0, count: 0 };
+          scoreMap[r.rated_user_id].total += r.score;
+          scoreMap[r.rated_user_id].count += 1;
+        });
+        const avgScores = {};
+        Object.keys(scoreMap).forEach(key => {
+          avgScores[key] = {
+            avg: (scoreMap[key].total / scoreMap[key].count).toFixed(1),
+            count: scoreMap[key].count
+          };
+        });
+        setUserScores(avgScores);
+      }
+
     } catch (error) {
       console.error(error.message);
     } finally {
@@ -58,10 +77,19 @@ export default function MyRequestsAndDonations({ session }) {
     try {
       // 1. İlgili talebi approve yap
       await supabase.from('requests').update({ status: 'approved' }).eq('id', requestId);
+      
+      fetchData();
+    } catch (error) {
+      alert("Hata: " + error.message);
+    }
+  };
+
+  const handleDeliver = async (donationId, requestId) => {
+    try {
+      // 1. İlan statüsünü completed yap
+      await supabase.from('donations').update({ status: 'completed' }).eq('id', donationId);
       // 2. Diğer tüm talepleri reject yap
       await supabase.from('requests').update({ status: 'rejected' }).eq('donation_id', donationId).neq('id', requestId);
-      // 3. İlan statüsünü completed yap
-      await supabase.from('donations').update({ status: 'completed' }).eq('id', donationId);
       
       fetchData();
     } catch (error) {
@@ -149,6 +177,11 @@ export default function MyRequestsAndDonations({ session }) {
                         }`}>
                           <div className="mb-3 sm:mb-0">
                             <span className="font-medium text-gray-800">@{req.profiles?.email.split('@')[0]}</span>
+                            {userScores[req.requester_id] && (
+                              <span className="ml-2 text-xs text-yellow-600 font-semibold bg-yellow-50 px-2 py-0.5 rounded border border-yellow-200">
+                                ⭐ {userScores[req.requester_id].avg} ({userScores[req.requester_id].count})
+                              </span>
+                            )}
                             {req.status === 'approved' && (
                               <span className="ml-2 text-green-700 font-bold text-sm bg-green-100 px-2 py-1 rounded">Onaylandı ✓</span>
                             )}
@@ -175,6 +208,14 @@ export default function MyRequestsAndDonations({ session }) {
                                 >
                                   <MessageCircle className="w-4 h-4 mr-1.5"/> WhatsApp
                                 </button>
+                                {donation.status === 'active' && (
+                                  <button
+                                    onClick={() => handleDeliver(donation.id, req.id)}
+                                    className="flex items-center px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-md transition-colors shadow-sm"
+                                  >
+                                    <Check className="w-4 h-4 mr-1.5"/> Teslim Ettim / Kapat
+                                  </button>
+                                )}
                                 <button
                                   onClick={() => openRatingModal(donation.id, req.requester_id)}
                                   className="flex items-center px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white text-sm font-medium rounded-md transition-colors shadow-sm"
@@ -220,6 +261,11 @@ export default function MyRequestsAndDonations({ session }) {
                       {req.status === 'approved' ? 'ONAYLANDI' : 
                        req.status === 'rejected' ? 'REDDEDİLDİ' : 'BEKLİYOR'}
                     </span>
+                    {req.donations?.donor_id && userScores[req.donations.donor_id] && (
+                      <span className="ml-2 text-xs text-yellow-600 font-semibold bg-yellow-50 px-2 py-0.5 rounded border border-yellow-200">
+                        Bağışçı Puanı: ⭐ {userScores[req.donations.donor_id].avg} ({userScores[req.donations.donor_id].count})
+                      </span>
+                    )}
                   </div>
                 </div>
                 
