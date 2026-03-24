@@ -96,6 +96,7 @@ create policy "Users can update own profile" on profiles for update using (auth.
 create policy "All donations are viewable by everyone" on donations for select using (true);
 create policy "Users can insert own donations" on donations for insert with check (auth.uid() = donor_id);
 create policy "Users can update own donations" on donations for update using (auth.uid() = donor_id);
+create policy "Users can delete own donations" on donations for delete using (auth.uid() = donor_id);
 
 -- Requests: Kullanıcı sadece kendi yaptığı çağrıları VE kendi bağışlarına gelen çağrıları görebilir
 create policy "Users can view relevant requests" on requests for select 
@@ -104,6 +105,10 @@ using (
   auth.uid() IN (SELECT donor_id FROM donations WHERE id = donation_id)
 );
 create policy "Users can insert own requests" on requests for insert with check (auth.uid() = requester_id);
+create policy "Users can delete own requests or requests on own donations" on requests for delete using (
+  auth.uid() = requester_id OR 
+  auth.uid() IN (SELECT donor_id FROM donations WHERE id = donation_id)
+);
 create policy "Donors can update request status" on requests for update 
 using (
   auth.uid() IN (SELECT donor_id FROM donations WHERE id = donation_id)
