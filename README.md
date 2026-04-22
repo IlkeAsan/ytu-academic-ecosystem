@@ -1,3 +1,59 @@
+# 🎓 YTÜ Akademik Ekosistem Bilgi Sistemi
+
+Bu proje, Yıldız Teknik Üniversitesi Bilgisayar Mühendisliği öğrencilerinin laboratuvar malzemelerini (sabit ders kitleri üzerinden) güvenle takas edebilmeleri için tasarlanmış bir platformdur.
+
+## 🛠 Kullanılan Teknolojiler
+- **Frontend:** React, TypeScript, Vite
+- **Tasarım:** Tailwind CSS, Lucide Icons
+- **Yönlendirme:** React Router
+- **Veritabanı & Auth:** Supabase
+
+---
+
+## 🚀 Projeyi Bilgisayarında Çalıştırma (Kurulum)
+
+Projeyi kendi bilgisayarına çekmek ve kodlamaya başlamak için terminalinde şu adımları izle:
+
+1. Repoyu bilgisayarına kopyala:
+   ```bash
+   git clone [https://github.com/IlkeAsan/ytu-academic-ecosystem.git](https://github.com/IlkeAsan/ytu-academic-ecosystem.git)
+
+Bağımlılıkları Yükleyin:
+
+Bash
+npm install
+Geliştirme Sunucusunu Başlatın:
+
+Bash
+npm run dev
+Site adreste çalışacaktır
+
+⚠️ Git Çalışma Düzeni (Geliştiriciler İçin)
+Projenin sağlığı ve kod çakışmalarını önlemek için şu kurallara uymak zorunludur:
+
+1. Yeni Bir Göreve Başlarken
+Asla main branch'inde çalışmayın. Her yeni özellik için yeni bir dal açın:
+
+Bash
+git checkout -b ozellik-adi
+# Örnek: git checkout -b login-ekrani
+2. Kodları Kaydetme ve Gönderme
+Yaptığınız değişiklikleri belirli aralıklarla paketleyin ve kendi dalınıza gönderin:
+
+Bash
+git add .
+git commit -m "Görev hakkında kısa ve öz açıklama"
+git push origin ozellik-adi
+
+3. Kodların Birleştirilmesi (Pull Request)
+GitHub üzerinden bir Pull Request (PR) açın. Kodlarınız proje lideri tarafından incelendikten sonra ana projeye (main) dahil edilecektir.
+
+
+
+
+
+
+/////////////////////////////////////////////
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
