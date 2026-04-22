@@ -1,53 +1,85 @@
-# 🎓 YTÜ Akademik Ekosistem Bilgi Sistemi
+🎓 YTÜ Akademik Ekosistem Bilgi Sistemi
 
-Bu proje, Yıldız Teknik Üniversitesi Bilgisayar Mühendisliği öğrencilerinin laboratuvar malzemelerini (sabit ders kitleri üzerinden) güvenle takas edebilmeleri için tasarlanmış bir platformdur.
+Bu platform, Yıldız Teknik Üniversitesi Bilgisayar Mühendisliği öğrencilerinin laboratuvar malzemelerine erişimini kolaylaştırmak, ders bazlı malzeme setlerini paylaşmak ve akademik yardımlaşmayı artırmak için geliştirilmiştir.
 
-## 🛠 Kullanılan Teknolojiler
-- **Frontend:** React, TypeScript, Vite
-- **Tasarım:** Tailwind CSS, Lucide Icons
-- **Yönlendirme:** React Router
-- **Veritabanı & Auth:** Supabase
+🌟 Temel Özellikler
 
----
+Ders Bazlı İlan Verme: Fotoğraf yükleme zorunluluğu olmadan, ders koduna göre hazır malzeme listeleri üzerinden hızlıca ilan açma.
 
-## 🚀 Projeyi Bilgisayarında Çalıştırma (Kurulum)
+Güvenli İletişim: Telefon numaralarının sadece malzeme eşleşmesi onaylandığında paylaşılması.
 
-Projeyi kendi bilgisayarına çekmek ve kodlamaya başlamak için terminalinde şu adımları izle:
+Akademik Odak: Sadece @yildiz.edu.tr uzantılı e-postaya sahip aktif öğrencilerin katılımı.
 
-1. Repoyu bilgisayarına kopyala:
-   ```bash
-   git clone [https://github.com/IlkeAsan/ytu-academic-ecosystem.git](https://github.com/IlkeAsan/ytu-academic-ecosystem.git)
+Güven Puanı: İşlem sonrası karşılıklı değerlendirme sistemi.
+
+🛠 Kullanılan Teknolojiler
+
+Frontend: React 18 + TypeScript + Vite
+
+Tasarım: Tailwind CSS (Modern ve sade arayüz)
+
+İkonlar: Lucide React
+
+Veritabanı & Kimlik Doğrulama: Supabase (PostgreSQL)
+
+🚀 Kurulum ve Çalıştırma
+
+Projeyi kendi bilgisayarınızda çalıştırmak için terminalinizde şu adımları izleyin:
+
+Projeyi Klonlayın:
+
+git clone [https://github.com/IlkeAsan/ytu-academic-ecosystem.git](https://github.com/IlkeAsan/ytu-academic-ecosystem.git)
+
 
 Bağımlılıkları Yükleyin:
 
-Bash
 npm install
+
+
 Geliştirme Sunucusunu Başlatın:
 
-Bash
 npm run dev
-Site adreste çalışacaktır
+
+
+Site şu adreste çalışacaktır: http://localhost:5173
 
 ⚠️ Git Çalışma Düzeni (Geliştiriciler İçin)
+
 Projenin sağlığı ve kod çakışmalarını önlemek için şu kurallara uymak zorunludur:
 
 1. Yeni Bir Göreve Başlarken
+
 Asla main branch'inde çalışmayın. Her yeni özellik için yeni bir dal açın:
 
-Bash
 git checkout -b ozellik-adi
-# Örnek: git checkout -b login-ekrani
+
+
+(Örnek: git checkout -b login-ekrani)
+
 2. Kodları Kaydetme ve Gönderme
+
 Yaptığınız değişiklikleri belirli aralıklarla paketleyin ve kendi dalınıza gönderin:
 
-Bash
 git add .
 git commit -m "Görev hakkında kısa ve öz açıklama"
 git push origin ozellik-adi
 
+
 3. Kodların Birleştirilmesi (Pull Request)
+
 GitHub üzerinden bir Pull Request (PR) açın. Kodlarınız proje lideri tarafından incelendikten sonra ana projeye (main) dahil edilecektir.
 
+📁 Proje Yapısı (src/)
+
+/components: Tekrar kullanılabilir arayüz parçaları (Butonlar, Kartlar).
+
+/pages: Sitenin ana sayfaları (Home, CreateListing).
+
+/constants: Ders kodları ve sabit malzeme listeleri.
+
+/lib: Supabase bağlantı ayarları.
+
+/types: TypeScript veri modelleri.
 
 
 
