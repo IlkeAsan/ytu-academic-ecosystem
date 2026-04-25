@@ -1,22 +1,14 @@
-/**
- * ============================================================================
- * DOSYA: src/pages/Home.tsx
- * GÖREV: Supabase'deki aktif ilanların çekilip listelendiği vitrin.
- * * YAPILACAKLAR:
- * 1. Sayfa yüklendiğinde (useEffect ile) Supabase'den 'listings' tablosu çekilecek.
- * 2. Gelen veriler map() fonksiyonu ile dönülerek 'ListingCard' bileşenlerine
- * aktarılacak (Grid yapısında listelenecek).
- * 3. Üst kısma "Ders Koduna Göre Ara" (Örn: BLM2042) şeklinde basit bir text
- * filtresi eklenecek.
- * 4. Yüklenme durumu için bir Loading (Yükleniyor...) animasyonu (Spinner) eklenecek.
- * ============================================================================
- */
 import { useState } from "react";
 import ListingCard from "../components/ListingCard";
-import { courses } from "../constants/courses";
+import { DERS_KODLARI } from "../constants/courses";
 
 export default function Home() {
   const [selectedCourse, setSelectedCourse] = useState("");
+
+  const courses = DERS_KODLARI.map((code) => ({
+    code,
+    name: code,
+  }));
 
   const filteredCourses = selectedCourse
     ? courses.filter((course) => course.code === selectedCourse)
@@ -43,7 +35,7 @@ export default function Home() {
 
           {courses.map((course) => (
             <option key={course.code} value={course.code}>
-              {course.code} - {course.name}
+              {course.code}
             </option>
           ))}
         </select>
@@ -61,5 +53,3 @@ export default function Home() {
     </div>
   );
 }
-
-// Ana sayfa listeleme kodları buraya yazılacak...
