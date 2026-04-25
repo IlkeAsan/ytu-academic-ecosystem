@@ -5,14 +5,9 @@ import { DERS_KODLARI } from "../constants/courses";
 export default function Home() {
   const [selectedCourse, setSelectedCourse] = useState("");
 
-  const courses = DERS_KODLARI.map((code) => ({
-    code,
-    name: code,
-  }));
-
   const filteredCourses = selectedCourse
-    ? courses.filter((course) => course.code === selectedCourse)
-    : courses;
+    ? DERS_KODLARI.filter((code) => code === selectedCourse)
+    : DERS_KODLARI;
 
   return (
     <div className="px-6 py-10">
@@ -33,9 +28,9 @@ export default function Home() {
         >
           <option value="">Ders seçiniz</option>
 
-          {courses.map((course) => (
-            <option key={course.code} value={course.code}>
-              {course.code}
+          {DERS_KODLARI.map((code) => (
+            <option key={code} value={code}>
+              {code}
             </option>
           ))}
         </select>
@@ -45,8 +40,8 @@ export default function Home() {
         <h2 className="text-2xl font-bold text-slate-900">Aktif İlanlar</h2>
 
         <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredCourses.map((course) => (
-            <ListingCard key={course.code} courseCode={course.code} />
+          {filteredCourses.map((code) => (
+            <ListingCard key={code} courseCode={code} />
           ))}
         </div>
       </section>
