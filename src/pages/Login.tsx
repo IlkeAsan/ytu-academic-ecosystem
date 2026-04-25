@@ -14,29 +14,9 @@
  * ============================================================================
  */
 
-import { useState } from "react";
 import { Link } from "react-router-dom";
-import { supabase } from "../lib/supabase";
 
 export default function Login() {
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      alert(error.message);
-    } else {
-      alert("Giriş başarılı");
-    }
-  };
   return (
     <div className="min-h-screen bg-gray-50 px-6 py-10">
       <section className="mx-auto max-w-md text-center">
@@ -53,10 +33,7 @@ export default function Login() {
         </p>
       </section>
 
-      <form
-        onSubmit={handleLogin}
-        className="mx-auto mt-8 max-w-md rounded-2xl border bg-white p-8 shadow-sm"
-      >
+      <form className="mx-auto mt-8 max-w-md rounded-2xl border bg-white p-8 shadow-sm">
         <div>
           <label className="mb-2 block text-sm font-medium text-slate-800">
             E-posta Adresi
@@ -64,8 +41,6 @@ export default function Login() {
           <input
             type="email"
             placeholder="isim@std.yildiz.edu.tr"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
           />
         </div>
@@ -77,8 +52,6 @@ export default function Login() {
           <input
             type="password"
             placeholder="••••••••"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
           />
         </div>
