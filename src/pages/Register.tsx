@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -22,10 +23,11 @@ export default function Register() {
     });
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
 
+    // 1. Validasyonlar
     const allowedEmail =
       form.email.endsWith("@yildiz.edu.tr") ||
       form.email.endsWith("@std.yildiz.edu.tr");
@@ -45,9 +47,29 @@ export default function Register() {
       return;
     }
 
-    console.log("Kayıt bilgileri:", form);
+    // 2. Supabase Kayıt İşlemi
+    try {
+      const { data, error: signUpError } = await supabase.auth.signUp({
+        email: form.email,
+        password: form.password,
+        options: {
+          data: {
+            first_name: form.firstName,
+            last_name: form.lastName,
+            phone: form.phone,
+          },
+        },
+      });
 
-    navigate("/login");
+      if (signUpError) throw signUpError;
+
+      console.log("Kayıt başarılı:", data);
+      alert("Kayıt başarılı! E-posta adresinizi onaylamayı unutmayın.");
+      navigate("/login");
+      
+    } catch (err: any) {
+      setError(err.message || "Kayıt işlemi sırasında bir hata oluştu.");
+    }
   }
 
   return (
@@ -56,9 +78,7 @@ export default function Register() {
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border bg-white text-3xl shadow-sm">
           📖
         </div>
-
         <h1 className="mt-6 text-3xl font-bold text-slate-900">Kayıt Ol</h1>
-
         <p className="mt-2 text-gray-600">
           YTÜ Ekosistem’e katılmak için bilgilerinizi girin.
         </p>
@@ -70,9 +90,7 @@ export default function Register() {
       >
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-800">
-              İsim
-            </label>
+            <label className="mb-2 block text-sm font-medium text-slate-800">İsim</label>
             <input
               name="firstName"
               value={form.firstName}
@@ -81,11 +99,8 @@ export default function Register() {
               className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
             />
           </div>
-
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-800">
-              Soyisim
-            </label>
+            <label className="mb-2 block text-sm font-medium text-slate-800">Soyisim</label>
             <input
               name="lastName"
               value={form.lastName}
@@ -97,9 +112,7 @@ export default function Register() {
         </div>
 
         <div className="mt-5">
-          <label className="mb-2 block text-sm font-medium text-slate-800">
-            E-posta Adresi
-          </label>
+          <label className="mb-2 block text-sm font-medium text-slate-800">E-posta Adresi</label>
           <input
             type="email"
             name="email"
@@ -112,9 +125,7 @@ export default function Register() {
         </div>
 
         <div className="mt-5">
-          <label className="mb-2 block text-sm font-medium text-slate-800">
-            Telefon Numarası
-          </label>
+          <label className="mb-2 block text-sm font-medium text-slate-800">Telefon Numarası</label>
           <input
             type="tel"
             name="phone"
@@ -127,9 +138,7 @@ export default function Register() {
         </div>
 
         <div className="mt-5">
-          <label className="mb-2 block text-sm font-medium text-slate-800">
-            Şifre
-          </label>
+          <label className="mb-2 block text-sm font-medium text-slate-800">Şifre</label>
           <input
             type="password"
             name="password"
@@ -141,9 +150,7 @@ export default function Register() {
         </div>
 
         <div className="mt-5">
-          <label className="mb-2 block text-sm font-medium text-slate-800">
-            Şifre Tekrar
-          </label>
+          <label className="mb-2 block text-sm font-medium text-slate-800">Şifre Tekrar</label>
           <input
             type="password"
             name="confirmPassword"
@@ -169,11 +176,7 @@ export default function Register() {
 
         <div className="mt-8 rounded-xl bg-gray-50 p-4 text-left text-sm text-gray-600">
           <p>
-            <span className="font-semibold text-slate-800">Önemli Bilgi:</span>{" "}
-            Sisteme sadece <span className="font-semibold">@yildiz.edu.tr</span>{" "}
-            veya <span className="font-semibold">@std.yildiz.edu.tr</span>{" "}
-            uzantılı resmi öğrenci/personel e-posta adresleri ile kayıt
-            olunabilir.
+            <span className="font-semibold text-slate-800">Önemli Bilgi:</span> Sisteme sadece <span className="font-semibold">@yildiz.edu.tr</span> veya <span className="font-semibold">@std.yildiz.edu.tr</span> uzantılı resmi e-posta adresleri ile kayıt olunabilir.
           </p>
         </div>
       </form>
