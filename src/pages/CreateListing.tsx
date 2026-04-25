@@ -26,7 +26,7 @@
 // }
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { courses } from "../constants/courses";
+import { DERS_MALZEMELERI, DERS_KODLARI } from "../constants/courses";
 
 export default function CreateListing() {
   const navigate = useNavigate();
@@ -34,9 +34,7 @@ export default function CreateListing() {
   const [selectedCourseCode, setSelectedCourseCode] = useState("");
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
 
-  const selectedCourse = courses.find(
-    (course) => course.code === selectedCourseCode,
-  );
+  const availableMaterials = selectedCourseCode ? DERS_MALZEMELERI[selectedCourseCode] : [];
 
   function handleMaterialChange(material: string) {
     if (selectedMaterials.includes(material)) {
@@ -89,20 +87,21 @@ export default function CreateListing() {
             >
               <option value="">Ders seçiniz</option>
 
-              {courses.map((course) => (
-                <option key={course.code} value={course.code}>
-                  {course.code} - {course.name}
+              {DERS_KODLARI.map((code) => (
+                <option key={code} value={code}>
+                  {code}
                 </option>
               ))}
             </select>
           </div>
 
-          {selectedCourse && (
+          {selectedCourseCode && (
             <div>
               <h2 className="mb-3 font-medium text-slate-800">Malzemeler</h2>
 
               <div className="grid gap-3 sm:grid-cols-2">
-                {selectedCourse.materials.map((material) => (
+
+                {availableMaterials.map((material) => (
                   <label
                     key={material}
                     className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 hover:bg-gray-50"
