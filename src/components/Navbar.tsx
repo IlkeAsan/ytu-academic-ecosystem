@@ -1,25 +1,45 @@
-
-/**
- * ============================================================================
- * DOSYA: src/components/Navbar.tsx
- * GÖREV: Sitenin her sayfasında en üstte duracak olan navigasyon menüsü.
- * SORUMLU: Mehmet (UI/UX)
- * * * YAPILACAKLAR:
- * 1. Tailwind ile yapışkan (sticky) veya sabit (fixed) bir üst menü çizilecek.
- * 2. Sol tarafta projenin adı "YTÜ Akademik Ekosistem" (veya logo) yer alacak.
- * 3. Sağ tarafta 3 temel buton olacak:
- * - İlanlar (Ana Sayfaya gider -> "/")
- * - İlan Ver (Forma gider -> "/ilan-ver")
- * - Giriş Yap (Login'e gider -> "/login")
- * 4. Mobil uyumluluk (Responsive) için küçük ekranlarda hamburger menüye 
- * dönüşmesi ekstra puan kazandırır!
- * ============================================================================
- */
+import { Link } from "react-router-dom";
 
 export default function Navbar() {
+  // örnek user (login olunca dolacak)
+  // const user = {
+  //   name: "Taha",
+  // };
+  const user = null; // login değilse
+
   return (
-    <nav className="bg-white shadow p-4">
-      <p>Navbar Tasarımı Buraya Gelecek</p>
+    <nav className="bg-white shadow">
+      <div className="flex items-center justify-between px-6 py-4">
+        {/* SOL */}
+        <Link to="/" className="text-xl font-bold text-blue-700">
+          YTÜ Akademik Ekosistem
+        </Link>
+
+        {/* SAĞ */}
+        <div className="flex items-center gap-6">
+          <Link to="/" className="text-gray-700 hover:text-blue-700 ">
+            İlanlar
+          </Link>
+
+          <Link to="/ilan-ver" className="text-gray-700 hover:text-blue-700">
+            İlan Ver
+          </Link>
+
+          {/* 🔥 KRİTİK KISIM */}
+          {user ? (
+            <Link
+              to="/profile"
+              className="font-medium text-blue-600 hover:underline"
+            >
+              Profil
+            </Link>
+          ) : (
+            <Link to="/login" className="text-gray-700 hover:text-blue-700">
+              Giriş Yap
+            </Link>
+          )}
+        </div>
+      </div>
     </nav>
   );
 }
