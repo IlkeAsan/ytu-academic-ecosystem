@@ -6,19 +6,25 @@ import { supabase } from "../lib/supabase";
 type Listing = {
   id: string;
   ders_kodu: string;
-  malzemeler: string[];
+  malzemeler: string[] | string;
   olusturan_id: string;
 };
 
 export default function Home() {
   const [listings, setListings] = useState<Listing[]>([]);
   const [selectedCourse, setSelectedCourse] = useState("");
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchListings();
+    fetchUserAndListings();
   }, []);
 
-  async function fetchListings() {
+  async function fetchUserAndListings() {
+    const { data: userData } = await supabase.auth.getUser();
+    const userId = userData.user?.id ?? null;
+
+    setCurrentUserId(userId);
+
     const { data, error } = await supabase.from("listings").select("*");
 
     if (error) {
@@ -26,7 +32,13 @@ export default function Home() {
       return;
     }
 
-    setListings(data ?? []);
+    const sortedListings = (data ?? []).sort((a, b) => {
+      if (a.olusturan_id === userId && b.olusturan_id !== userId) return -1;
+      if (a.olusturan_id !== userId && b.olusturan_id === userId) return 1;
+      return 0;
+    });
+
+    setListings(sortedListings);
   }
 
   const filteredListings = selectedCourse
@@ -70,8 +82,11 @@ export default function Home() {
             {filteredListings.map((listing) => (
               <ListingCard
                 key={listing.id}
+                listingId={listing.id}
                 courseCode={listing.ders_kodu}
                 materials={listing.malzemeler}
+                ownerId={listing.olusturan_id}
+                isOwnListing={listing.olusturan_id === currentUserId}
               />
             ))}
           </div>
