@@ -37,10 +37,10 @@ export default function Login() {
       if (loginError) throw loginError;
 
       console.log("Giriş başarılı:", data);
-      
+
       // Giriş başarılıysa ana sayfaya yönlendir
       navigate("/");
-      
+
     } catch (err: any) {
       // Hata mesajlarını Türkçeleştirebilirsin
       if (err.message === "Invalid login credentials") {
@@ -71,7 +71,7 @@ export default function Login() {
         </p>
       </section>
 
-      <form 
+      <form
         onSubmit={handleSubmit}
         className="mx-auto mt-8 max-w-md rounded-2xl border bg-white p-8 shadow-sm"
       >
@@ -113,9 +113,8 @@ export default function Login() {
         <button
           type="submit"
           disabled={loading}
-          className={`mt-6 w-full rounded-lg bg-slate-900 px-4 py-3 font-semibold text-white hover:bg-slate-800 transition-colors ${
-            loading ? "opacity-70 cursor-not-allowed" : ""
-          }`}
+          className={`mt-6 w-full rounded-lg bg-slate-900 px-4 py-3 font-semibold text-white hover:bg-slate-800 transition-colors ${loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
         >
           {loading ? "Giriş yapılıyor..." : "Giriş Yap"}
         </button>
