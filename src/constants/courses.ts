@@ -10,7 +10,7 @@
  * beslenecek. Tüm dersleri buraya manuel olarak ekleyeceğiz.
  * ============================================================================
  */
-  
+
 // Sabit listeler buraya yazılacak...
 /**
  * ============================================================================
@@ -20,7 +20,7 @@
  */
 
 export const DERS_MALZEMELERI: Record<string, string[]> = {
-  "BLM2611": [
+  BLM2611: [
     "7400 (NAND)",
     "7402 (NOR)",
     "7404 (Inverter)",
@@ -33,18 +33,16 @@ export const DERS_MALZEMELERI: Record<string, string[]> = {
     "7486 (XOR)",
     "74112 (JK Flip-Flop)",
     "74153 (Multiplexer)",
-    "Jumper Kablo"
+    "Jumper Kablo",
   ],
-  "BLM1033": [
+  BLM1033: [
     "Direnç Seti",
     "Kondansatör Seti",
     "Diyot",
     "Breadboard",
     "Jumper Kablo Seti",
-    "Multimetre"
-  ]
+    "Multimetre",
+  ],
 };
 
-// Bu kod otomatik olarak ["BLM2611", "BLM1033"] listesini oluşturur
 export const DERS_KODLARI = Object.keys(DERS_MALZEMELERI);
-
