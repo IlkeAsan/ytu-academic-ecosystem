@@ -8,6 +8,7 @@ type Listing = {
   ders_kodu: string;
   malzemeler: string[] | string;
   olusturan_id: string;
+  ownerName?: string;
 };
 
 export default function Home() {
@@ -25,14 +26,39 @@ export default function Home() {
 
     setCurrentUserId(userId);
 
-    const { data, error } = await supabase.from("listings").select("*");
+    const { data: listingsData, error } = await supabase.from("listings").select("*");
 
     if (error) {
       console.error(error);
       return;
     }
 
-    const sortedListings = (data ?? []).sort((a, b) => {
+    const fetchedListings = listingsData ?? [];
+
+    // İlan sahiplerinin isimlerini profiles tablosundan çek
+    const ownerIds = [...new Set(fetchedListings.map((l) => l.olusturan_id))];
+    let profilesMap: Record<string, string> = {};
+
+    if (ownerIds.length > 0) {
+      const { data: profilesData } = await supabase
+        .from("profiles")
+        .select("id, ad_soyad")
+        .in("id", ownerIds);
+
+      if (profilesData) {
+        profilesMap = profilesData.reduce((acc, profile) => {
+          acc[profile.id] = profile.ad_soyad;
+          return acc;
+        }, {} as Record<string, string>);
+      }
+    }
+
+    const listingsWithNames = fetchedListings.map((listing) => ({
+      ...listing,
+      ownerName: profilesMap[listing.olusturan_id] || "Anonim",
+    }));
+
+    const sortedListings = listingsWithNames.sort((a, b) => {
       if (a.olusturan_id === userId && b.olusturan_id !== userId) return -1;
       if (a.olusturan_id !== userId && b.olusturan_id === userId) return 1;
       return 0;
@@ -86,6 +112,7 @@ export default function Home() {
                 courseCode={listing.ders_kodu}
                 materials={listing.malzemeler}
                 ownerId={listing.olusturan_id}
+                ownerName={listing.ownerName}
                 isOwnListing={listing.olusturan_id === currentUserId}
               />
             ))}
