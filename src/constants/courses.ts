@@ -43,6 +43,15 @@ export const DERS_MALZEMELERI: Record<string, string[]> = {
     "Jumper Kablo Seti",
     "Multimetre",
   ],
+  "Breadboard": [
+    "Tam Boy Breadboard"
+
+  ],
+  "Multimetre": [
+    "Dijital Multimetre",
+    "Multimetre Probu",
+  ],
+
 };
 
 export const DERS_KODLARI = Object.keys(DERS_MALZEMELERI);
