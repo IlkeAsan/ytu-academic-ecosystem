@@ -27,6 +27,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { DERS_MALZEMELERI, DERS_KODLARI } from "../constants/courses";
+import { supabase } from "../lib/supabase";
 
 export default function CreateListing() {
   const navigate = useNavigate();
@@ -34,7 +35,9 @@ export default function CreateListing() {
   const [selectedCourseCode, setSelectedCourseCode] = useState("");
   const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
 
-  const availableMaterials = selectedCourseCode ? DERS_MALZEMELERI[selectedCourseCode] : [];
+  const availableMaterials = selectedCourseCode
+    ? DERS_MALZEMELERI[selectedCourseCode]
+    : [];
 
   function handleMaterialChange(material: string) {
     if (selectedMaterials.includes(material)) {
@@ -46,17 +49,24 @@ export default function CreateListing() {
     }
   }
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
 
-    const newListing = {
-      courseCode: selectedCourseCode,
-      materials: selectedMaterials,
-    };
+    const { data: userData } = await supabase.auth.getUser();
 
-    console.log("Yeni ilan:", newListing);
+    const { error } = await supabase.from("listings").insert([
+      {
+        ders_kodu: selectedCourseCode,
+        malzemeler: selectedMaterials,
+        olusturan_id: userData.user?.id,
+      },
+    ]);
 
-    // Supabase eklenecek yer burası
+    if (error) {
+      console.error(error);
+      alert(error.message);
+      return;
+    }
 
     navigate("/");
   }
@@ -100,7 +110,6 @@ export default function CreateListing() {
               <h2 className="mb-3 font-medium text-slate-800">Malzemeler</h2>
 
               <div className="grid gap-3 sm:grid-cols-2">
-
                 {availableMaterials.map((material) => (
                   <label
                     key={material}
