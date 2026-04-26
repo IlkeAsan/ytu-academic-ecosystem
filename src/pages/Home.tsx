@@ -1,13 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ListingCard from "../components/ListingCard";
 import { DERS_KODLARI } from "../constants/courses";
+import { supabase } from "../lib/supabase";
+
+type Listing = {
+  id: string;
+  ders_kodu: string;
+  malzemeler: string[];
+  olusturan_id: string;
+};
 
 export default function Home() {
+  const [listings, setListings] = useState<Listing[]>([]);
   const [selectedCourse, setSelectedCourse] = useState("");
 
-  const filteredCourses = selectedCourse
-    ? DERS_KODLARI.filter((code) => code === selectedCourse)
-    : DERS_KODLARI;
+  useEffect(() => {
+    fetchListings();
+  }, []);
+
+  async function fetchListings() {
+    const { data, error } = await supabase.from("listings").select("*");
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    setListings(data ?? []);
+  }
+
+  const filteredListings = selectedCourse
+    ? listings.filter((l) => l.ders_kodu === selectedCourse)
+    : listings;
 
   return (
     <div className="px-6 py-10">
@@ -26,7 +50,7 @@ export default function Home() {
           onChange={(e) => setSelectedCourse(e.target.value)}
           className="mt-8 w-full max-w-xl rounded-full border border-gray-300 px-6 py-3 shadow-sm outline-none focus:border-blue-500"
         >
-          <option value="">Ders seçiniz</option>
+          <option value="">Tüm Dersler</option>
 
           {DERS_KODLARI.map((code) => (
             <option key={code} value={code}>
@@ -39,11 +63,19 @@ export default function Home() {
       <section className="mt-12">
         <h2 className="text-2xl font-bold text-slate-900">Aktif İlanlar</h2>
 
-        <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {filteredCourses.map((code) => (
-            <ListingCard key={code} courseCode={code} />
-          ))}
-        </div>
+        {filteredListings.length === 0 ? (
+          <p className="mt-4 text-gray-500">Henüz ilan yok.</p>
+        ) : (
+          <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {filteredListings.map((listing) => (
+              <ListingCard
+                key={listing.id}
+                courseCode={listing.ders_kodu}
+                materials={listing.malzemeler}
+              />
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

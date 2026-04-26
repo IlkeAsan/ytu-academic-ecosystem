@@ -3,10 +3,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import CreateListing from "./pages/CreateListing";
 import Profile from "./pages/Profile";
-<Route path="/profile" element={<Profile />} />;
-import Register from "./pages/Register";
 
 function App() {
   return (
@@ -19,6 +18,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/ilan-ver" element={<CreateListing />} />
+          <Route path="/profile" element={<Profile />} />
         </Routes>
       </main>
     </BrowserRouter>
