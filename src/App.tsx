@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import CreateListing from "./pages/CreateListing";
 import Profile from "./pages/Profile";
+import Requests from "./pages/Requests";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/talepler" element={<Requests />} />
           <Route path="/ilan-ver" element={<CreateListing />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>

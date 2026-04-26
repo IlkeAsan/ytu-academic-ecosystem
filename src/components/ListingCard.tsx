@@ -1,13 +1,19 @@
+import { supabase } from "../lib/supabase";
+
 type ListingCardProps = {
+  listingId: string;
   courseCode: string;
   materials: string[] | string;
+  ownerId: string;
   isOwnListing?: boolean;
   onDelete?: () => void;
 };
 
 export default function ListingCard({
+  listingId,
   courseCode,
   materials,
+  ownerId,
   isOwnListing,
   onDelete,
 }: ListingCardProps) {
@@ -16,6 +22,32 @@ export default function ListingCard({
     : materials
       ? JSON.parse(materials)
       : [];
+
+  async function handleRequest() {
+    const { data: userData } = await supabase.auth.getUser();
+
+    if (!userData.user) {
+      alert("Talep göndermek için giriş yapmalısın.");
+      return;
+    }
+
+    const { error } = await supabase.from("talepler").insert([
+      {
+        ilan_id: listingId,
+        alici_id: userData.user.id,
+        satici_id: ownerId,
+        durum: "beklemede",
+      },
+    ]);
+
+    if (error) {
+      console.error(error);
+      alert(error.message);
+      return;
+    }
+
+    alert("Talep gönderildi.");
+  }
 
   return (
     <div className="relative rounded-lg border bg-white p-4 shadow-sm">
@@ -41,7 +73,10 @@ export default function ListingCard({
       </div>
 
       {!isOwnListing && (
-        <button className="mt-4 rounded border border-slate-900 px-4 py-2 text-sm hover:bg-slate-900 hover:text-white">
+        <button
+          onClick={handleRequest}
+          className="mt-4 rounded border border-slate-900 px-4 py-2 text-sm hover:bg-slate-900 hover:text-white"
+        >
           İletişime Geç
         </button>
       )}
