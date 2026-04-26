@@ -5,6 +5,7 @@ type ListingCardProps = {
   courseCode: string;
   materials: string[] | string;
   ownerId: string;
+  ownerName?: string;
   isOwnListing?: boolean;
   onDelete?: () => void;
 };
@@ -14,6 +15,7 @@ export default function ListingCard({
   courseCode,
   materials,
   ownerId,
+  ownerName,
   isOwnListing,
   onDelete,
 }: ListingCardProps) {
@@ -61,6 +63,7 @@ export default function ListingCard({
         </button>
       )}
       <h3 className="text-xl font-bold text-slate-900 pr-8">{courseCode}</h3>
+      {ownerName && <p className="mt-1 text-sm font-medium text-blue-600">İlan Sahibi: {ownerName}</p>}
 
       <p className="mt-3 text-sm text-gray-500">Sağlanan Malzemeler</p>
 
