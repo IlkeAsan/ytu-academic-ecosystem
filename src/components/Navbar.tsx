@@ -12,7 +12,9 @@ export default function Navbar() {
     });
 
     // 2. Oturum değişikliklerini (giriş/çıkış) dinle
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
@@ -37,6 +39,9 @@ export default function Navbar() {
 
           <Link to="/ilan-ver" className="text-gray-700 hover:text-blue-700">
             İlan Ver
+          </Link>
+          <Link to="/talepler" className="text-gray-700 hover:text-blue-700">
+            Talepler
           </Link>
 
           {user ? (

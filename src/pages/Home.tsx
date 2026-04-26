@@ -82,8 +82,10 @@ export default function Home() {
             {filteredListings.map((listing) => (
               <ListingCard
                 key={listing.id}
+                listingId={listing.id}
                 courseCode={listing.ders_kodu}
                 materials={listing.malzemeler}
+                ownerId={listing.olusturan_id}
                 isOwnListing={listing.olusturan_id === currentUserId}
               />
             ))}
