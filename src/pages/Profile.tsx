@@ -38,6 +38,23 @@ export default function Profile() {
     fetchMyListings();
   }, []);
 
+  async function handleDeleteListing(id: string) {
+    const confirmDelete = window.confirm("Bu ilanı silmek istediğinize emin misiniz?");
+    if (!confirmDelete) return;
+
+    // 1. Supabase'den sil
+    const { error } = await supabase.from("listings").delete().eq("id", id);
+    
+    if (error) {
+      alert("İlan silinirken bir hata oluştu!");
+      console.error(error);
+      return;
+    }
+
+    // 2. Başarıyla silindiyse ekrandaki listeyi de güncelle (sayfayı yenilemeye gerek kalmadan)
+    setMyListings((prevListings) => prevListings.filter((listing) => listing.id !== id));
+  }
+
   async function handleLogout() {
     await supabase.auth.signOut();
     navigate("/login");
@@ -72,6 +89,8 @@ export default function Profile() {
                   key={listing.id}
                   courseCode={listing.ders_kodu}
                   materials={listing.malzemeler}
+                  isOwnListing={true}
+                  onDelete={() => handleDeleteListing(listing.id)}
                 />
               ))}
             </div>

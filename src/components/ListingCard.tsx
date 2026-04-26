@@ -2,12 +2,14 @@ type ListingCardProps = {
   courseCode: string;
   materials: string[] | string;
   isOwnListing?: boolean;
+  onDelete?: () => void;
 };
 
 export default function ListingCard({
   courseCode,
   materials,
   isOwnListing,
+  onDelete,
 }: ListingCardProps) {
   const materialList = Array.isArray(materials)
     ? materials
@@ -16,8 +18,17 @@ export default function ListingCard({
       : [];
 
   return (
-    <div className="rounded-lg border bg-white p-4 shadow-sm">
-      <h3 className="text-xl font-bold text-slate-900">{courseCode}</h3>
+    <div className="relative rounded-lg border bg-white p-4 shadow-sm">
+      {isOwnListing && onDelete && (
+        <button
+          onClick={onDelete}
+          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-red-100 text-lg font-bold text-red-600 transition-colors hover:bg-red-600 hover:text-white"
+          title="İlanı Sil"
+        >
+          -
+        </button>
+      )}
+      <h3 className="text-xl font-bold text-slate-900 pr-8">{courseCode}</h3>
 
       <p className="mt-3 text-sm text-gray-500">Sağlanan Malzemeler</p>
 
