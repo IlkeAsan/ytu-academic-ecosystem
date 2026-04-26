@@ -64,7 +64,7 @@ export default function Register() {
       if (signUpError) throw signUpError;
 
       console.log("Kayıt başarılı:", data);
-      alert("Kayıt başarılı! E-posta adresinizi onaylamayı unutmayın.");
+      alert("Kayıt başarılı");
       navigate("/login");
       
     } catch (err: any) {
